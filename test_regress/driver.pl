@@ -666,6 +666,7 @@ sub new {
         verilator_flags3 => ["--clk clk"],
         verilator_make_gmake => 1,
         verilator_make_cmake => 0,
+	verilator_luajit => 0,
         verilated_debug => $Opt_Verilated_Debug,
         stdout_filename => undef,  # Redirect stdout
         %$self};
@@ -909,12 +910,14 @@ sub compile_vlt_flags {
     unshift @verilator_flags, "--debug-partition" if $param{vltmt};
     unshift @verilator_flags, "-CFLAGS -ggdb -LDFLAGS -ggdb" if $opt_gdbsim;
     unshift @verilator_flags, "-CFLAGS -fsanitize=address,undefined -LDFLAGS -fsanitize=address,undefined" if $param{sanitize};
-    unshift @verilator_flags, "--make gmake" if $param{verilator_make_gmake};
+    unshift @verilator_flags, "--make gmake" if $param{verilator_make_gmake} && !$param{verilator_luajit};
     unshift @verilator_flags, "--make cmake" if $param{verilator_make_cmake};
+    unshift @verilator_flags, "--build" if $param{verilator_luajit};
+    unshift @verilator_flags, "--luajit" if $param{verilator_luajit};
     unshift @verilator_flags, "--exe" if
-        $param{make_main} && $param{verilator_make_gmake};
+        $param{make_main} && $param{verilator_make_gmake} && !$param{verilator_luajit};
     unshift @verilator_flags, "../".$self->{main_filename} if
-        $param{make_main} && $param{verilator_make_gmake};
+        $param{make_main} && $param{verilator_make_gmake} && !$param{verilator_luajit};
     if (defined $opt_optimize) {
         my $letters = "";
         if ($opt_optimize =~ /[a-zA-Z]/) {
@@ -1320,6 +1323,14 @@ sub execute {
                     expect=>$param{xsim_run_expect},  # non-verilator expect isn't the same
                     expect_filename=>$param{xsim_expect_filename},
                     );
+    }
+    elsif ($param{luajit}) {
+	$self->_run(logfile=>"$self->{obj_dir}/vlt_luajit.log",
+		    cmd=>["cp $self->{t_dir}/$self->{name}.lua $self->{obj_dir}"
+			  ." && ".$run_env
+			  ."export LD_LIBRARY_PATH=\"$self->{obj_dir}\" LUA_PATH=\"$self->{obj_dir}/?.lua\""
+			  ." && luajit $self->{obj_dir}/$self->{name}.lua"],
+	            );
     }
     elsif ($param{vlt_all}
         #&& (!$param{needs_v4} || -r "$ENV{VERILATOR_ROOT}/src/V3Gate.cpp")

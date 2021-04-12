@@ -14,6 +14,7 @@
 //
 //*************************************************************************
 
+#include "V3File.h"
 #include "config_build.h"
 #include "verilatedos.h"
 
@@ -3990,4 +3991,11 @@ void V3EmitC::emitcFiles() {
             EmitCStmts visitor(cfilep->tblockp(), &of, true);
         }
     }
+}
+
+void V3EmitC::emitModPorts(AstNodeModule* modp, V3OutCFile* ofp) {
+    EmitCStmts stmts;
+    stmts.m_ofp = ofp;
+    string section;
+    stmts.emitVarList(modp->stmtsp(), EmitCStmts::EVL_CLASS_IO, "", section);
 }

@@ -922,6 +922,10 @@ V3OutFile::V3OutFile(const string& filename, V3OutFormatter::Language lang)
     }
 }
 
+V3OutFile::V3OutFile(V3OutFile* ofp, V3OutFormatter::Language lang)
+    : V3OutFormatter{"", lang}
+    , m_fp(ofp->m_fp) {}
+
 V3OutFile::~V3OutFile() {
     if (m_fp) fclose(m_fp);
     m_fp = nullptr;

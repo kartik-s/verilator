@@ -244,6 +244,7 @@ private:
     bool m_ignc = false;            // main switch: --ignc
     bool m_inhibitSim = false;      // main switch: --inhibit-sim
     bool m_lintOnly = false;        // main switch: --lint-only
+    bool m_luajit = false;          // main switch: --luajit
     bool m_gmake = false;           // main switch: --make gmake
     bool m_main = false;            // main swithc: --main
     bool m_orderClockDly = true;    // main switch: --order-clock-delay
@@ -444,6 +445,7 @@ public:
     bool exe() const { return m_exe; }
     bool flatten() const { return m_flatten; }
     bool gmake() const { return m_gmake; }
+    bool luajit() const { return m_luajit; }
     bool threadsDpiPure() const { return m_threadsDpiPure; }
     bool threadsDpiUnpure() const { return m_threadsDpiUnpure; }
     bool threadsCoarsen() const { return m_threadsCoarsen; }

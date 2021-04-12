@@ -338,6 +338,7 @@ detailed descriptions of these arguments.
     --language <lang>           Default language standard to parse
      +libext+<ext>+[ext]...     Extensions for finding modules
     --lint-only                 Lint, but do not make output
+    --luajit                    Create Luajit bindings
      -MAKEFLAGS <flags>         Arguments to pass to make during --build
     --max-num-width <value>     Maximum number width (default: 64K)
     --MMD                       Create .d dependency files
