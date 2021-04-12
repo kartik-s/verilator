@@ -109,9 +109,12 @@ public:
                         putMakeClassEntry(of, v3Global.opt.traceSourceBase() + "_c.cpp");
                         if (v3Global.opt.systemC()) {
                             putMakeClassEntry(of, v3Global.opt.traceSourceLang() + ".cpp");
+                        } else if (v3Global.opt.luajit()) {
+                            putMakeClassEntry(of, "verilated_vcd_luajit.cpp");
                         }
                     }
                     if (v3Global.opt.mtasks()) putMakeClassEntry(of, "verilated_threads.cpp");
+                    if (v3Global.opt.luajit()) putMakeClassEntry(of, "verilated_luajit.cpp");
                 } else if (support == 2 && slow) {
                 } else {
                     for (AstNodeFile* nodep = v3Global.rootp()->filesp(); nodep;
@@ -147,6 +150,8 @@ public:
             of.puts("default: " + v3Global.opt.exeName() + "\n");
         } else if (!v3Global.opt.protectLib().empty()) {
             of.puts("default: lib" + v3Global.opt.protectLib() + "\n");
+        } else if (v3Global.opt.luajit()) {
+            of.puts("default: " + v3Global.opt.prefix() + ".lua\n");
         } else {
             of.puts("default: " + v3Global.opt.prefix() + "__ALL.a\n");
         }
@@ -271,6 +276,23 @@ public:
                         + v3Global.opt.protectLibName(false) + " "
                         + v3Global.opt.protectLibName(true) + "\n");
             }
+        }
+
+        if (v3Global.opt.luajit()) {
+            // NOLINTNEXTLINE(performance-inefficient-string-concatenation)
+            of.puts("\nVM_LUAJIT_SHIM = lib" + v3Global.opt.prefix() + "_luajit_shim\n");
+            of.puts("\n$(VM_LUAJIT_SHIM).o: $(VM_LUAJIT_SHIM).cpp\n");
+            of.puts("\t$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<\n");
+
+            of.puts("\n### Link rules... (from --luajit)\n");
+            of.puts("$(VM_LUAJIT_SHIM).so: $(VM_LUAJIT_SHIM).o $(VK_GLOBAL_OBJS) "
+                    "$(VM_PREFIX)__ALL.a\n");
+            of.puts("\t$(LINK) $(LDFLAGS) -shared $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o "
+                    "$@\n");
+
+            of.puts("\n### Run preprocessor on LuaJIT module... (from --luajit)\n");
+            of.puts("$(VM_PREFIX).lua: $(VM_PREFIX)_pre.lua $(VM_LUAJIT_SHIM).so\n");
+            of.puts("\t$(CXX) $(CPPFLAGS) -DVL_IN_LUAJIT_FFI_MODULE -E -P -x c++ $< -o $@");
         }
 
         of.puts("\n");

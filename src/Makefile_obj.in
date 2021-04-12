@@ -190,6 +190,7 @@ RAW_OBJS = \
 	V3EmitCMake.o \
 	V3EmitCModel.o \
 	V3EmitCSyms.o \
+        V3EmitLuajit.o \
 	V3EmitMk.o \
 	V3EmitV.o \
 	V3EmitXml.o \

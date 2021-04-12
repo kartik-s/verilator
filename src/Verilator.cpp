@@ -46,6 +46,7 @@
 #include "V3EmitC.h"
 #include "V3EmitCMain.h"
 #include "V3EmitCMake.h"
+#include "V3EmitLuajit.h"
 #include "V3EmitMk.h"
 #include "V3EmitV.h"
 #include "V3EmitXml.h"
@@ -541,6 +542,8 @@ static void process() {
         V3EmitV::emitvFiles();
         V3EmitC::emitcFiles();
     }
+
+    if (v3Global.opt.luajit()) { V3EmitLuajit::emitBindings(); }
 
     // Statistics
     reportStatsIfEnabled();

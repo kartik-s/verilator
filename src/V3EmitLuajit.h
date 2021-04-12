@@ -1,6 +1,6 @@
 // -*- mode: C++; c-file-style: "cc-mode" -*-
 //*************************************************************************
-// DESCRIPTION: Verilator: Emit C++ code for module tree
+// DESCRIPTION: Verilator: Emit LuaJIT bindings for top-level module
 //
 // Code available from: https://verilator.org
 //
@@ -14,10 +14,9 @@
 //
 //*************************************************************************
 
-#ifndef VERILATOR_V3EMITC_H_
-#define VERILATOR_V3EMITC_H_
+#ifndef VERILATOR_V3EMITLUAJIT_H_
+#define VERILATOR_V3EMITLUAJIT_H_
 
-#include "V3File.h"
 #include "config_build.h"
 #include "verilatedos.h"
 
@@ -26,17 +25,9 @@
 
 //============================================================================
 
-class V3EmitC final {
+class V3EmitLuajit final {
 public:
-    static void emitcConstPool();
-    static void emitcHeaders();
-    static void emitcImp();
-    static void emitcInlines();
-    static void emitcModel();
-    static void emitcSyms(bool dpiHdrOnly = false);
-    static void emitcFiles();
-
-    static void emitModPorts(AstNodeModule* modp, V3OutCFile* ofp);
+    static void emitBindings();
 };
 
 #endif  // Guard

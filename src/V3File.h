@@ -109,6 +109,7 @@ public:
         LA_VERILOG = 1,
         LA_MK = 2,
         LA_XML = 3,
+        LA_LUA = 4,
     };
 
 private:
@@ -186,6 +187,7 @@ class V3OutFile VL_NOT_FINAL : public V3OutFormatter {
 
 public:
     V3OutFile(const string& filename, V3OutFormatter::Language lang);
+    V3OutFile(V3OutFile* ofp, V3OutFormatter::Language lang);
     virtual ~V3OutFile() override;
     void putsForceIncs();
 
@@ -200,6 +202,10 @@ class V3OutCFile VL_NOT_FINAL : public V3OutFile {
 public:
     explicit V3OutCFile(const string& filename)
         : V3OutFile{filename, V3OutFormatter::LA_C} {
+        resetPrivate();
+    }
+    explicit V3OutCFile(V3OutFile* ofp)
+        : V3OutFile{ofp, V3OutFormatter::LA_C} {
         resetPrivate();
     }
     virtual ~V3OutCFile() override = default;
@@ -262,6 +268,14 @@ public:
     // No automatic indentation yet.
     void puts(const char* strg) { putsNoTracking(strg); }
     void puts(const string& strg) { putsNoTracking(strg); }
+};
+
+class V3OutLuaFile final : public V3OutFile {
+public:
+    explicit V3OutLuaFile(const string& filename)
+        : V3OutFile{filename, V3OutFormatter::LA_LUA} {}
+    virtual ~V3OutLuaFile() override = default;
+    virtual void putsHeader() { puts("-- Verilated -*- Lua -*-\n"); }
 };
 
 //============================================================================

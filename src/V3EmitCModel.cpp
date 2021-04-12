@@ -85,6 +85,10 @@ class EmitCModel final : public EmitCFunc {
 
         puts("\n");
         ofp()->putsPrivate(false);  // public:
+        // root instance pointer (for access to internals, including public_flat items).
+        puts("\n// Root instance pointer to allow access to model internals,\n"
+             "// including inlined /* verilator public_flat_* */ items.\n");
+        puts(prefixNameProtect(modp) + "* const rootp;\n");
         // User accessible IO
         puts("\n// PORTS\n"
              "// The application code writes and reads these signals to\n"
@@ -106,11 +110,6 @@ class EmitCModel final : public EmitCFunc {
                 puts(prefixNameProtect(cellp->modp()) + "* const " + cellp->nameProtect() + ";\n");
             }
         }
-
-        // root instance pointer (for access to internals, including public_flat items).
-        puts("\n// Root instance pointer to allow access to model internals,\n"
-             "// including inlined /* verilator public_flat_* */ items.\n");
-        puts(prefixNameProtect(modp) + "* const rootp;\n");
 
         puts("\n");
         ofp()->putsPrivate(false);  // public:
@@ -686,4 +685,18 @@ public:
 void V3EmitC::emitcModel() {
     UINFO(2, __FUNCTION__ << ": " << endl);
     { EmitCModel emit(v3Global.rootp()); }
+}
+
+void V3EmitC::emitModPorts(AstNodeModule* modp, V3OutCFile* ofp) {
+    EmitCModel visitor(v3Global.rootp());
+
+    visitor.m_ofp = ofp;
+
+    for (const AstNode* nodep = modp->stmtsp(); nodep; nodep = nodep->nextp()) {
+        if (const AstVar* const varp = VN_CAST(nodep, Var)) {
+            if (varp->isPrimaryIO()) {  //
+                visitor.emitVarDecl(varp, /* asRef: */ false);
+            }
+        }
+    }
 }
