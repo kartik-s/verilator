@@ -129,38 +129,43 @@ public:
 
         // Emit constructor
         m_ofp->puts("void *" + prefix + "_new() {\n");
-        m_ofp->puts("return reinterpret_cast<void *>((new " + prefix
-                    + ")->rootp);\n");
+        m_ofp->puts("return reinterpret_cast<void *>((new " + prefix + ")->rootp);\n");
         m_ofp->puts("}\n");
 
         // Emit destructor
         m_ofp->puts("void " + prefix + "_delete(void *p) {\n");
-        m_ofp->puts("delete reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp) + "*>(p)->vlSymsp->__Vm_modelp;\n");
+        m_ofp->puts("delete reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp)
+                    + "*>(p)->vlSymsp->__Vm_modelp;\n");
         m_ofp->puts("}\n");
 
         // Emit eval
         m_ofp->puts("void " + prefix + "_eval(void *p) {\n");
-        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp) + "*>(p)->vlSymsp->__Vm_modelp->eval();\n");
+        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp)
+                    + "*>(p)->vlSymsp->__Vm_modelp->eval();\n");
         m_ofp->puts("}\n");
 
         // Emit eval_step
         m_ofp->puts("void " + prefix + "_eval_step(void *p) {\n");
-        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp) + "*>(p)->vlSymsp->__Vm_modelp->eval_step();\n");
+        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp)
+                    + "*>(p)->vlSymsp->__Vm_modelp->eval_step();\n");
         m_ofp->puts("}\n");
 
         // Emit eval_end_step
         m_ofp->puts("void " + prefix + "_eval_end_step(void *p) {\n");
-        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp) + "*>(p)->vlSymsp->__Vm_modelp->eval_end_step();\n");
+        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp)
+                    + "*>(p)->vlSymsp->__Vm_modelp->eval_end_step();\n");
         m_ofp->puts("}\n");
 
         // Emit final
         m_ofp->puts("void " + prefix + "_final(void *p) {\n");
-        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp) + "*>(p)->vlSymsp->__Vm_modelp->final();\n");
+        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp)
+                    + "*>(p)->vlSymsp->__Vm_modelp->final();\n");
         m_ofp->puts("}\n");
 
         // Emit got_finish
         m_ofp->puts("bool " + prefix + "_got_finish(void *p) {\n");
-        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp) + "*>(p)->vlSymsp->__Vm_modelp->contextp()->gotFinish();\n");
+        m_ofp->puts("return reinterpret_cast<" + EmitCBaseVisitor::prefixNameProtect(modp)
+                    + "*>(p)->vlSymsp->__Vm_modelp->contextp()->gotFinish();\n");
         m_ofp->puts("}\n");
 
         // Emit trace
